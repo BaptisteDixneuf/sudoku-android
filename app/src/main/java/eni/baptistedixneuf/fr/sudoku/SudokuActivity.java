@@ -5,12 +5,26 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import eni.baptistedixneuf.fr.sudoku.chrono.ChronoHandler;
+import eni.baptistedixneuf.fr.sudoku.chrono.ChronoRunnable;
+
 public class SudokuActivity extends Activity {
+
+    private Thread t;
+    private ChronoRunnable chrono;
+    private ChronoHandler handler ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
+        handler  = new ChronoHandler();
+        handler.setActivity(this);
+        chrono = new ChronoRunnable(this);
+        t = new Thread(chrono);
+        chrono.setRunning(true) ;
+        t.start();
     }
 
     @Override
@@ -33,5 +47,14 @@ public class SudokuActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public ChronoHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(ChronoHandler handler) {
+        this.handler = handler;
     }
 }
