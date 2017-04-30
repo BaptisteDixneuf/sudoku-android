@@ -19,8 +19,12 @@ public class SudokuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
+
+        //Handler pour le timer
         handler  = new ChronoHandler();
         handler.setActivity(this);
+
+        //Thread secondaire pour le chrono
         chrono = new ChronoRunnable(this);
         t = new Thread(chrono);
         chrono.setRunning(true) ;

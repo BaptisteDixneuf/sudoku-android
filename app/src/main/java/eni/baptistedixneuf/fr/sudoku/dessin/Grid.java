@@ -5,43 +5,75 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
  * Created by bdixneuf2015 on 28/04/2017.
  */
-public class Grid extends View {
+public class Grid extends View  implements View.OnTouchListener{
 
     public static final int GRID_WIDTH = 9;
     public static final int GRID_HEIGHT = 9;
     public static final int HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER = 500;
     public static final int MARGE_BETWEEN_GRID_AND_BOTTOM = 50;
 
+    //Oles dimensions de l'écran
+    private int displayWidth;
+    private int displayHeight;
+
+    //largeur d'une case
+    private int caseWidth;
+
+    //la hauteur d'une case
+    private int caseHeight;
+
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.setOnTouchListener(this);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        init(canvas);
         drawGrid(canvas);
         drawButtons(canvas);
-        drawTimer(canvas);
+
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN :
+                detectElementClicked(x, y);
+                break;
 
-    private void drawGrid(Canvas canvas){
+            default: return false;
+        }
 
+        this.invalidate();
+
+        return true;
+    }
+
+    private void init(Canvas canvas){
         //On réucpère les dimensions de l'écran
-        int displayWidth = canvas.getWidth();
-        int displayHeight = canvas.getHeight();
-
+        displayWidth = canvas.getWidth();
+        displayHeight = canvas.getHeight();
 
         //Calcul de la largeur d'une case
-        int caseWidth = displayWidth/GRID_WIDTH;
+        caseWidth = displayWidth/GRID_WIDTH;
+
 
         //Calcul de la hauteur d'une case
-        int caseHeight = (displayHeight- HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER)/GRID_HEIGHT;
+        caseHeight = (displayHeight- HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER)/GRID_HEIGHT;
+    }
+
+    private void drawGrid(Canvas canvas){
 
         //On dessine les lignes verticales
         for (int i= 0; i <= GRID_WIDTH; i++){
@@ -70,19 +102,6 @@ public class Grid extends View {
     }
 
     private void drawButtons(Canvas canvas){
-
-
-
-        //On réucpère les dimensions de l'écran
-        int displayWidth = canvas.getWidth();
-        int displayHeight = canvas.getHeight();
-
-
-        //Calcul de la largeur d'une case
-        int caseWidth = displayWidth/GRID_WIDTH;
-
-        //Calcul de la hauteur d'une case
-        int caseHeight = (displayHeight- HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER)/GRID_HEIGHT;
 
         //On dessine les lignes verticales
         for (int i= 0; i <= GRID_WIDTH ; i++){
@@ -117,15 +136,11 @@ public class Grid extends View {
                     (int ) (displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER +  MARGE_BETWEEN_GRID_AND_BOTTOM + (caseHeight/1.2)), paint );
         }
 
-
-    }
-
-    public void drawTimer(Canvas canvas){
-
     }
 
 
-
-
+    private void detectElementClicked(int x, int y){
+        Log.d("BDF","Origine x : "  + x + ", Origine y :" + y );
+    }
 
 }
