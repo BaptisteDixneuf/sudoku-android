@@ -141,6 +141,35 @@ public class Grid extends View  implements View.OnTouchListener{
 
     private void detectElementClicked(int x, int y){
         Log.d("BDF","Origine x : "  + x + ", Origine y :" + y );
+
+        /* Log.d("BDF"," Partie 1 => y inférieur à "+ (displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER));
+        Log.d("BDF"," Partie 2 => y supérieur à "+ (displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM) +
+                " et inférieur à" + (displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM + caseHeight)); */
+
+
+        //On détecte dans quel partie l'utilisateur clique
+        if(y < displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER){
+            Log.d("BDF","Partie 1 => Sudoku");
+
+            //On détecte la case
+            int caseX = x/caseWidth;
+            int caseY = y/caseHeight;
+            Log.d("BDF","Case x" + caseX + " Case y" + caseY);
+
+
+        }else if (y > displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM &&
+                y < displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM + caseHeight){
+            Log.d("BDF","Partie 2 => Choix chifre");
+
+            //On détecte la case
+            int caseSelectedX = x/caseWidth;
+            Log.d("BDF","caseSelectedX : " + caseSelectedX );
+
+        }else {
+            Log.d("BDF","Partie autre");
+        }
+
+
     }
 
 }
