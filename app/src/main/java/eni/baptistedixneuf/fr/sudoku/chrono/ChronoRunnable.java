@@ -25,8 +25,8 @@ public class ChronoRunnable
         startTime  = System.currentTimeMillis() ;
 
         while (isRunning){
-            long currentTime = System.currentTimeMillis();;
-            Log.d("Chrono " , " -- "+(cpt++));
+            long currentTime = System.currentTimeMillis();
+            /*Log.d("Chrono " , " -- "+(cpt++));*/
             this.activity.getHandler().sendEmptyMessage(acc + (int) ((currentTime - startTime)/1000));
             try {
                 Thread.sleep(100);
@@ -34,7 +34,7 @@ public class ChronoRunnable
                 e.printStackTrace();
             }
         }
-        long currentTime = System.currentTimeMillis();;
+        long currentTime = System.currentTimeMillis();
         acc = (int) ((currentTime - startTime)/1000);
 
     }
