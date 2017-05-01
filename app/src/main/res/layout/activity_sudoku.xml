@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
 
     <eni.baptistedixneuf.fr.sudoku.dessin.Grid
-        android:id="@+id/dessin"
+        android:id="@+id/activity_sudoku_dessin"
         android:layout_height="match_parent"
         android:layout_width="match_parent" />
 

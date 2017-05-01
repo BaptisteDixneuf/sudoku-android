@@ -19,6 +19,8 @@ import java.util.Map;
  */
 public class Grid extends View  implements View.OnTouchListener{
 
+    public String initSudoku;
+
     public static final int GRID_WIDTH = 9;
     public static final int GRID_HEIGHT = 9;
     public static final int HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER = 500;
@@ -53,6 +55,7 @@ public class Grid extends View  implements View.OnTouchListener{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         init(canvas);
+        initSudokuNumbers(canvas);
         drawGrid(canvas);
         drawButtons(canvas);
         drawNumbers(canvas);
@@ -108,6 +111,7 @@ public class Grid extends View  implements View.OnTouchListener{
                         newCase.setNumber(numberSelected);
                         newCase.setX(mapPositionFinal.get("x"));
                         newCase.setY(mapPositionFinal.get("y"));
+                        newCase.setLocked(false);
 
                         //On vérifie que la case n'est pas déjà remplie
                         boolean isCaseVide = Case.isCaseVide(cases, newCase);
@@ -144,6 +148,23 @@ public class Grid extends View  implements View.OnTouchListener{
 
         //Calcul de la hauteur d'une case
         caseHeight = (displayHeight- HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER)/GRID_HEIGHT;
+    }
+
+    private void initSudokuNumbers(Canvas canvas){
+
+        //On dessine les chiffres
+        for(int i = 0; i < initSudoku.length(); i++){
+            String text = ""+initSudoku.charAt(i);
+            if(!text.equals("0")) {
+                //On initialise la nouvelle case
+                Case newCase = new Case();
+                newCase.setNumber(Integer.parseInt(text));
+                newCase.setX((i%9));
+                newCase.setY((int) i/9);
+                newCase.setLocked(true);
+                cases.add(newCase);
+            }
+        }
     }
 
     private void drawGrid(Canvas canvas){
@@ -230,6 +251,11 @@ public class Grid extends View  implements View.OnTouchListener{
         //Affichage des nombres de la grille
         for (Case itemCase : cases ) {
             String text = ""+itemCase.getNumber();
+            if(itemCase.isLocked()){
+                paint.setColor(Color.GREEN);
+            }else{
+                paint.setColor(Color.RED);
+            }
             canvas.drawText(text,0,text.length(),
                     (int) ((caseWidth*itemCase.getX()) + (caseWidth/3)),
                     (int ) ((caseHeight*itemCase.getY()) + (caseHeight/1.2)), paint );
@@ -271,5 +297,14 @@ public class Grid extends View  implements View.OnTouchListener{
         }
 
         return map;
+    }
+
+
+    public String getInitSudoku() {
+        return initSudoku;
+    }
+
+    public void setInitSudoku(String initSudoku) {
+        this.initSudoku = initSudoku;
     }
 }

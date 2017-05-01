@@ -11,6 +11,7 @@ public class Case {
     private int x;
     private int y;
     private int number;
+    private boolean isLocked;
 
     /**
      * Fonction qui permet de savoir si dans une liste de case, une case en postion x,y est déjà prise par un nombre
@@ -51,5 +52,13 @@ public class Case {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import eni.baptistedixneuf.fr.sudoku.chrono.ChronoHandler;
 import eni.baptistedixneuf.fr.sudoku.chrono.ChronoRunnable;
+import eni.baptistedixneuf.fr.sudoku.dessin.Grid;
 
 public class SudokuActivity extends Activity {
 
@@ -29,6 +31,9 @@ public class SudokuActivity extends Activity {
         t = new Thread(chrono);
         chrono.setRunning(true) ;
         t.start();
+
+        Grid viewCanvas = (Grid) findViewById(R.id.activity_sudoku_dessin);
+        viewCanvas.setInitSudoku("001002003001002003001002003001002003001002003001002003001002003001002003001002003");
     }
 
     @Override
