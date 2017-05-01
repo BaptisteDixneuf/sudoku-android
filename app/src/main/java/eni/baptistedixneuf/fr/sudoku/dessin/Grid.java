@@ -99,15 +99,25 @@ public class Grid extends View  implements View.OnTouchListener{
                 if( numberSelected != 0 ) {
                     mapPositionFinal = detectElementClicked(x, y);
 
+                    //On vérifie que l'on a  une position finale où enregistrer le nombre
                     if(mapPositionFinal.get("x") != null && mapPositionFinal.get("y") != null) {
                         Log.d("BDF", "x " + mapPositionFinal.get("x") + ", y" + mapPositionFinal.get("y"));
+
+                        //On initialise la nouvelle case
                         Case newCase = new Case();
                         newCase.setNumber(numberSelected);
                         newCase.setX(mapPositionFinal.get("x"));
                         newCase.setY(mapPositionFinal.get("y"));
-                        cases.add(newCase);
+
+                        //On vérifie que la case n'est pas déjà remplie
+                        boolean isCaseVide = Case.isCaseVide(cases, newCase);
+
+                        //Si la case est vide, on ajoute le nombre à la grille
+                        if(isCaseVide) {
+                            cases.add(newCase);
+                        }
                     }
-                    
+
                 }
 
                 // On réinitialiase les déplacements de nombre en cours
@@ -131,7 +141,6 @@ public class Grid extends View  implements View.OnTouchListener{
 
         //Calcul de la largeur d'une case
         caseWidth = displayWidth/GRID_WIDTH;
-
 
         //Calcul de la hauteur d'une case
         caseHeight = (displayHeight- HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER)/GRID_HEIGHT;
@@ -208,6 +217,7 @@ public class Grid extends View  implements View.OnTouchListener{
         paint.setColor(Color.RED);
         paint.setTextSize(100);
 
+        //Déplacement en cours d'un nombre
         if(mapDeplacement != null){
             if(mapDeplacement.get("x") != null && mapDeplacement.get("y") != null){
                 String text = ""+numberSelected;
@@ -217,7 +227,7 @@ public class Grid extends View  implements View.OnTouchListener{
             }
         }
 
-
+        //Affichage des nombres de la grille
         for (Case itemCase : cases ) {
             String text = ""+itemCase.getNumber();
             canvas.drawText(text,0,text.length(),
