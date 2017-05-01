@@ -9,6 +9,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by bdixneuf2015 on 28/04/2017.
  */
@@ -29,9 +34,19 @@ public class Grid extends View  implements View.OnTouchListener{
     //la hauteur d'une case
     private int caseHeight;
 
+    //Object servant au touchEvent
+    private int numberSelected;
+    private Map<String,Integer> mapNumberSelected;
+    private Map<String,Integer> mapDeplacement;
+
+    //Liste des cases présentes dans la grille
+    private List<Case> cases;
+
+
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setOnTouchListener(this);
+        cases = new ArrayList<>();
     }
 
     @Override
@@ -40,7 +55,7 @@ public class Grid extends View  implements View.OnTouchListener{
         init(canvas);
         drawGrid(canvas);
         drawButtons(canvas);
-
+        drawNumbers(canvas);
     }
 
     @Override
@@ -49,8 +64,57 @@ public class Grid extends View  implements View.OnTouchListener{
         int y = (int) event.getY();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN :
-                detectElementClicked(x, y);
+                Log.d("BDF", "actionDown");
+
+                // On réinitaliase les nombres en mouvement + nombre sélectionné
+                mapDeplacement = new HashMap<>();
+                numberSelected = 0;
+                mapNumberSelected = null;
+
+                // On récupère le nouveau nombre sélectionné
+                mapNumberSelected = detectElementClicked(x, y);
+                if(mapNumberSelected.get("numberSelected") != null ){
+                    numberSelected = mapNumberSelected.get("numberSelected") + 1;
+                    Log.d("BDF", "nombre sélectionné " + numberSelected);
+                }
+
                 break;
+            case MotionEvent.ACTION_MOVE :
+                Log.d("BDF", "actionMove");
+
+                //On affiche le déplcement en cours du cchiffre sélectionné
+                if(mapNumberSelected != null && numberSelected != 0) {
+                    mapDeplacement = new HashMap<>();
+                    mapDeplacement.put("x", x);
+                    mapDeplacement.put("y", y);
+                }
+
+                break;
+            case MotionEvent.ACTION_UP :
+                Log.d("BDF", "actionUp");
+
+                Map<String, Integer> mapPositionFinal;
+
+                //On enregistre le nombre dans la grille
+                if( numberSelected != 0 ) {
+                    mapPositionFinal = detectElementClicked(x, y);
+
+                    if(mapPositionFinal.get("x") != null && mapPositionFinal.get("y") != null) {
+                        Log.d("BDF", "x " + mapPositionFinal.get("x") + ", y" + mapPositionFinal.get("y"));
+                        Case newCase = new Case();
+                        newCase.setNumber(numberSelected);
+                        newCase.setX(mapPositionFinal.get("x"));
+                        newCase.setY(mapPositionFinal.get("y"));
+                        cases.add(newCase);
+                    }
+                    
+                }
+
+                // On réinitialiase les déplacements de nombre en cours
+                mapDeplacement = new HashMap<>();
+                mapPositionFinal = null;
+                numberSelected = 0;
+                mapNumberSelected= null;
 
             default: return false;
         }
@@ -138,8 +202,33 @@ public class Grid extends View  implements View.OnTouchListener{
 
     }
 
+    private void drawNumbers(Canvas canvas){
 
-    private void detectElementClicked(int x, int y){
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setTextSize(100);
+
+        if(mapDeplacement != null){
+            if(mapDeplacement.get("x") != null && mapDeplacement.get("y") != null){
+                String text = ""+numberSelected;
+                canvas.drawText(text,0,text.length(),
+                        mapDeplacement.get("x"),
+                        mapDeplacement.get("y"), paint );
+            }
+        }
+
+
+        for (Case itemCase : cases ) {
+            String text = ""+itemCase.getNumber();
+            canvas.drawText(text,0,text.length(),
+                    (int) ((caseWidth*itemCase.getX()) + (caseWidth/3)),
+                    (int ) ((caseHeight*itemCase.getY()) + (caseHeight/1.2)), paint );
+        }
+    }
+
+    private Map<String,Integer> detectElementClicked(int x, int y){
+
+        Map<String,Integer> map = new HashMap<>();
         Log.d("BDF","Origine x : "  + x + ", Origine y :" + y );
 
         /* Log.d("BDF"," Partie 1 => y inférieur à "+ (displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER));
@@ -155,7 +244,8 @@ public class Grid extends View  implements View.OnTouchListener{
             int caseX = x/caseWidth;
             int caseY = y/caseHeight;
             Log.d("BDF","Case x" + caseX + " Case y" + caseY);
-
+            map.put("x", caseX);
+            map.put("y", caseY);
 
         }else if (y > displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM &&
                 y < displayHeight - HEIGHT_BOTTOM_FOR_BUTTON_AND_TIMER + MARGE_BETWEEN_GRID_AND_BOTTOM + caseHeight){
@@ -164,12 +254,12 @@ public class Grid extends View  implements View.OnTouchListener{
             //On détecte la case
             int caseSelectedX = x/caseWidth;
             Log.d("BDF","caseSelectedX : " + caseSelectedX );
+            map.put("numberSelected", caseSelectedX);
 
         }else {
             Log.d("BDF","Partie autre");
         }
 
-
+        return map;
     }
-
 }
